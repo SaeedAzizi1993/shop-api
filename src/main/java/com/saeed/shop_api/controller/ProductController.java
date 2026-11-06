@@ -1,7 +1,9 @@
 package com.saeed.shop_api.controller;
 
-import com.saeed.shop_api.entity.Product;
+import com.saeed.shop_api.dto.ProductRequest;
+import com.saeed.shop_api.dto.ProductResponse;
 import com.saeed.shop_api.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,6 +12,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
+
     private final ProductService productService;
 
     public ProductController(ProductService productService) {
@@ -17,24 +20,25 @@ public class ProductController {
     }
 
     @GetMapping
-    public List<Product> getAll() {
+    public List<ProductResponse> getAll() {
         return productService.findAll();
     }
 
     @GetMapping("/{id}")
-    public Product getById(@PathVariable Long id) {
+    public ProductResponse getById(@PathVariable Long id) {
         return productService.findById(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Product create(@RequestBody Product product) {
-        return productService.create(product);
+    public ProductResponse create(@Valid @RequestBody ProductRequest request) {
+        return productService.create(request);
     }
 
     @PutMapping("/{id}")
-    public Product update(@PathVariable Long id, @RequestBody Product product) {
-        return productService.update(id, product);
+    public ProductResponse update(@PathVariable Long id,
+                                  @Valid @RequestBody ProductRequest request) {
+        return productService.update(id, request);
     }
 
     @DeleteMapping("/{id}")
@@ -42,5 +46,4 @@ public class ProductController {
     public void delete(@PathVariable Long id) {
         productService.delete(id);
     }
-
 }
