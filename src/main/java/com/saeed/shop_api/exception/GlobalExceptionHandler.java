@@ -45,6 +45,7 @@ public class GlobalExceptionHandler {
         return new ApiError(404, ex.getMessage(), null, LocalDateTime.now());
     }
 
+    //نگهبان 5: محصول سفارش دارد و حذف نمی شود <- 409
     @ExceptionHandler(ProductInUseException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ApiError handleProductInUse(ProductInUseException ex) {
