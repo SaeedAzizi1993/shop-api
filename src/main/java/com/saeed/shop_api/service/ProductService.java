@@ -3,7 +3,9 @@ package com.saeed.shop_api.service;
 import com.saeed.shop_api.dto.ProductRequest;
 import com.saeed.shop_api.dto.ProductResponse;
 import com.saeed.shop_api.entity.Product;
+import com.saeed.shop_api.exception.ProductInUseException;
 import com.saeed.shop_api.exception.ProductNotFoundException;
+import com.saeed.shop_api.repository.OrderRepository;
 import com.saeed.shop_api.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
@@ -14,9 +16,11 @@ import java.util.List;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final OrderRepository orderRepository;
 
-    public ProductService(ProductRepository productRepository) {
+    public ProductService(ProductRepository productRepository, OrderRepository orderRepository) {
         this.productRepository = productRepository;
+        this.orderRepository = orderRepository;
     }
 
     // ۱. همه محصولات
@@ -62,6 +66,9 @@ public class ProductService {
     // ۵. حذف
     public void delete(Long id) {
         Product product = getProductOrThrow(id);
+        if (orderRepository.existsByProductId(id)) {
+            throw new ProductInUseException(id);
+        }
         productRepository.delete(product);
     }
 
