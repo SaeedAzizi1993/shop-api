@@ -2,6 +2,8 @@ package com.saeed.shop_api.controller;
 
 import com.saeed.shop_api.dto.OrderRequest;
 import com.saeed.shop_api.dto.OrderResponse;
+import com.saeed.shop_api.dto.OrderStatusRequest;
+import com.saeed.shop_api.entity.OrderStatus;
 import com.saeed.shop_api.service.OrderService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -33,6 +35,11 @@ public class OrderController {
     @GetMapping("/{id}")
     public OrderResponse getById(@PathVariable Long id) {
         return orderService.findById(id);
+    }
+
+    @PatchMapping("/{id}/status")
+    public OrderResponse updateStatus(@PathVariable Long id, @Valid @RequestBody OrderStatusRequest request) {
+        return orderService.updateStatus(id, request.status());
     }
 
 }

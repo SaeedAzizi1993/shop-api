@@ -51,4 +51,11 @@ public class GlobalExceptionHandler {
     public ApiError handleProductInUse(ProductInUseException ex) {
         return new ApiError(409, ex.getMessage(), null, LocalDateTime.now());
     }
+    //نگهبان 6: تغییر وضعیت غیرمجاز <- 409
+    @ExceptionHandler(InvalidOrderStatusException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ApiError InvalidOrderStatus(InvalidOrderStatusException ex) {
+        return new ApiError(409, ex.getMessage(), null, LocalDateTime.now());
+    }
+
 }

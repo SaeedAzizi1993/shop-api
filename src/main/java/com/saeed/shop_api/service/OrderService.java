@@ -5,6 +5,7 @@ import com.saeed.shop_api.dto.OrderResponse;
 import com.saeed.shop_api.entity.Order;
 import com.saeed.shop_api.entity.OrderStatus;
 import com.saeed.shop_api.entity.Product;
+import com.saeed.shop_api.exception.InvalidOrderStatusException;
 import com.saeed.shop_api.exception.OrderNotFoundException;
 import com.saeed.shop_api.exception.OutOfStockException;
 import com.saeed.shop_api.exception.ProductNotFoundException;
@@ -71,5 +72,29 @@ public class OrderService {
     public OrderResponse findById(Long id) {
         Order order = orderRepository.findById(id).orElseThrow(() -> new OrderNotFoundException(id));
         return OrderResponse.from(order);
+    }
+
+    @Transactional
+    public OrderResponse updateStatus(Long id, OrderStatus newStatus) {
+        // 1. find the order (or 404)
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new OrderNotFoundException(id));
+
+        // 2. only PENDING orders can change (or 409)
+        if (order.getStatus() != OrderStatus.PENDING || newStatus == OrderStatus.PENDING) {
+            throw new InvalidOrderStatusException(order.getStatus(), newStatus);
+        }
+
+        // 3. cancelled? give the stock back
+        if (newStatus == OrderStatus.CANCELLED) {
+            Product product = order.getProduct();
+            product.setStock(product.getStock() + order.getQuantity());
+            productRepository.save(product);
+        }
+
+        // 4. save the new status
+        order.setStatus(newStatus);
+        Order saved = orderRepository.save(order);
+        return OrderResponse.from(saved);
     }
 }
