@@ -3,7 +3,6 @@ package com.saeed.shop_api.controller;
 import com.saeed.shop_api.dto.OrderRequest;
 import com.saeed.shop_api.dto.OrderResponse;
 import com.saeed.shop_api.dto.OrderStatusRequest;
-import com.saeed.shop_api.entity.OrderStatus;
 import com.saeed.shop_api.service.OrderService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
