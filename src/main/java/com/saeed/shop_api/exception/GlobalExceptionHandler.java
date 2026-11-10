@@ -30,4 +30,9 @@ public class GlobalExceptionHandler {
 
         return new ApiError(400, "Validation failed", errors, LocalDateTime.now());
     }
+    @ExceptionHandler(OutOfStockException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ApiError handleOutOfStock(OutOfStockException ex) {
+        return new ApiError(409, ex.getMessage(), null, LocalDateTime.now());
+    }
 }
