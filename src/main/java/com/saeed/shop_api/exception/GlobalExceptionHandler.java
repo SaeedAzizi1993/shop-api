@@ -55,7 +55,7 @@ public class GlobalExceptionHandler {
     //نگهبان 6: تغییر وضعیت غیرمجاز <- 409
     @ExceptionHandler(InvalidOrderStatusException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ApiError handelInvalidOrderStatus(InvalidOrderStatusException ex) {
+    public ApiError handleInvalidOrderStatus(InvalidOrderStatusException ex) {
         return new ApiError(409, ex.getMessage(), null, LocalDateTime.now());
     }
 
